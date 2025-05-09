@@ -4,6 +4,9 @@ on:
     - cron: '0 0 * * 1'  # Runs at midnight UTC every Monday
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
