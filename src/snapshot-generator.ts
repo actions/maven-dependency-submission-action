@@ -7,7 +7,7 @@ import { MavenRunner } from './maven-runner';
 import { loadFileContents } from './utils/file-utils';
 
 const packageData = require('../package.json');
-const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
 
 export type MavenConfiguration = {
   ignoreMavenWrapper?: boolean;
@@ -27,6 +27,7 @@ export type SnapshotConfig = {
     url: string;
     version: string;
   };
+  correlator?: string;
 };
 
 export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, snapshotConfig?: SnapshotConfig) {
@@ -53,12 +54,16 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
     const snapshot = new Snapshot(detector, snapshotConfig?.context, snapshotConfig?.job);
     snapshot.addManifest(manifest);
 
-    const specifiedRef = getNonEmtptyValue(snapshotConfig?.ref);
+    snapshot.job.correlator = snapshotConfig?.correlator
+      ? snapshotConfig.correlator
+      : snapshot.job?.correlator;
+
+    const specifiedRef = getNonEmptyValue(snapshotConfig?.ref);
     if (specifiedRef) {
       snapshot.ref = specifiedRef;
     }
 
-    const specifiedSha = getNonEmtptyValue(snapshot?.sha);
+    const specifiedSha = getNonEmptyValue(snapshot?.sha);
     if (specifiedSha) {
       snapshot.sha = specifiedSha;
     }
@@ -168,7 +173,7 @@ function getRepositoryRelativePath(file) {
   return result;
 }
 
-function getNonEmtptyValue(str?: string) {
+function getNonEmptyValue(str?: string) {
   if (str) {
     const trimmed = str.trim();
     if (trimmed.length > 0) {
