@@ -1,13 +1,13 @@
 import * as core from '@actions/core';
 import * as path from 'path';
+import packageData from '../package.json' with { type: 'json' };
 
 import { Manifest, Snapshot } from '@github/dependency-submission-toolkit';
-import { Depgraph, MavenDependencyGraph, parseDependencyJson, depgraphfilename } from './depgraph';
-import { MavenRunner } from './maven-runner';
-import { loadFileContents } from './utils/file-utils';
+import { Depgraph, MavenDependencyGraph, parseDependencyJson, depgraphfilename } from './depgraph.js';
+import { MavenRunner } from './maven-runner.js';
+import { loadFileContents } from './utils/file-utils.js';
 import { readdirSync } from 'fs';
 
-const packageData = require('../package.json');
 const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
 
 export type MavenConfiguration = {
